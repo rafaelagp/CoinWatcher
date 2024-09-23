@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ThemedMainScreen() =
     CoinWatcherTheme {
-        MainScreen(Modifier)
+        MainScreen(Modifier) {}
     }
 
 @Composable
