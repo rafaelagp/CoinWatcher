@@ -4,10 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import net.rafgpereira.coinwatcher.ui.screen.main.MainScreen
+import androidx.navigation.compose.rememberNavController
+import net.rafgpereira.coinwatcher.ui.navigation.MyNavHost
 import net.rafgpereira.coinwatcher.ui.theme.CoinWatcherTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,17 +13,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ThemedMainScreen()
+            CoinWatcherTheme {
+                MyNavHost(rememberNavController())
+            }
         }
     }
 }
-
-@Composable
-fun ThemedMainScreen() =
-    CoinWatcherTheme {
-        MainScreen(Modifier) {}
-    }
-
-@Composable
-@Preview(showSystemUi = true)
-fun ThemedMainScreenPreview() = ThemedMainScreen()

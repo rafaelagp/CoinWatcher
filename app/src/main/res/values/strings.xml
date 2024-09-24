@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CoinWatcher</string>
+    <string name="add_to_watchlist_screen_title">Add To Watchlist</string>
 </resources>
