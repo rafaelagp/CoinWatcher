@@ -7,7 +7,7 @@ import androidx.room.Query
 import net.rafgpereira.coinwatcher.data.local.db.model.WatchedCoin
 
 @Dao
-interface WatchedCoinDao {
+interface IWatchedCoinDao {
     @Query("SELECT * FROM watchedcoin")
     fun getAll(): List<WatchedCoin>
     @Insert
