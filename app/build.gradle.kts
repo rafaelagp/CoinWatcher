@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "net.rafgpereira.coinwatcher"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "net.rafgpereira.coinwatcher"
