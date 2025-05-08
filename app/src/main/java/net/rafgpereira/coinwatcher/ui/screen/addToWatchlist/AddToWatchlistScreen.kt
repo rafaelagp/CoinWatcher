@@ -27,7 +27,7 @@ fun AddToWatchlistScreen(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
-            ) { }
+            ) {}
         },
     )
 }

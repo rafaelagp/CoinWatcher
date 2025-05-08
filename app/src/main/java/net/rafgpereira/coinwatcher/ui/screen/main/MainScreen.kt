@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import net.rafgpereira.coinwatcher.R
 import net.rafgpereira.coinwatcher.ui.common.ThemedAddFab
 import net.rafgpereira.coinwatcher.ui.common.ThemedTopAppBar
+import net.rafgpereira.coinwatcher.ui.theme.CoinWatcherTheme
 
 @Composable
 fun MainScreen(
@@ -39,4 +40,16 @@ fun MainScreen(
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun MainScreenPreview() = MainScreen(Modifier) {}
+fun DarkModeMainScreenPreview() =
+    CoinWatcherTheme(
+        darkTheme = true,
+        content = { MainScreen(Modifier) {} }
+    )
+
+@Composable
+@Preview(showSystemUi = true, showBackground = true)
+fun LightModeMainScreenPreview() =
+    CoinWatcherTheme(
+        darkTheme = false,
+        content = { MainScreen(Modifier) {} }
+    )
