@@ -7,7 +7,4 @@ sealed class Route {
 
     @Serializable
     data object MainScreen: Route()
-
-    @Serializable
-    data object AddToWatchlistScreen: Route()
 }

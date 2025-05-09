@@ -1,10 +1,20 @@
 package net.rafgpereira.coinwatcher.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+
+val ColorScheme.positive: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) FluorescentGreen else Color.Yellow
+
+val ColorScheme.negative: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) BrightRed else Color.Red
 
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPurple,
@@ -12,6 +22,7 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Pink80,
     onPrimary = FluorescentGreen,
     background = DarkGrey,
+    primaryContainer = MidGrey,
 )
 
 private val LightColorScheme = lightColorScheme(
