@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.1"
+agp = "8.7.3"
 kotlin = "2.0.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -35,7 +35,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name=
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
+android-gradle = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ## Type Safe Compose Navigation

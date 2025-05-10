@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.gradle)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     // Type Safe Compose Navigation
@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "net.rafgpereira.coinwatcher"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "net.rafgpereira.coinwatcher"
