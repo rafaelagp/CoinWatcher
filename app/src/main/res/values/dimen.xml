@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="half_unit_dp">4dp</dimen>
+    <dimen name="unit_dp">8dp</dimen>
+    <dimen name="double_unit_dp">16dp</dimen>
+
+    <dimen name="main_coin_item_height">75dp</dimen>
+    <dimen name="main_coin_item_name_spacing">2dp</dimen>
+    <dimen name="main_coin_item_column_h_padding">@dimen/double_unit_dp</dimen>
+    <dimen name="main_coin_item_column_v_padding">12dp</dimen>
+    <dimen name="main_coin_item_separator_height">1dp</dimen>
+</resources>

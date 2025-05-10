@@ -31,9 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import net.rafgpereira.coinwatcher.R
@@ -43,14 +43,18 @@ import net.rafgpereira.coinwatcher.ui.common.PillText
 import net.rafgpereira.coinwatcher.ui.common.ThemedAddFab
 import net.rafgpereira.coinwatcher.ui.common.ThemedTopAppBar
 import net.rafgpereira.coinwatcher.ui.theme.CoinWatcherTheme
-import net.rafgpereira.coinwatcher.ui.theme.MidGrey
 import net.rafgpereira.coinwatcher.ui.theme.negative
 import net.rafgpereira.coinwatcher.ui.theme.positive
+
+data class Coin(
+    val ticker: String, val name: String, val price: Double, val percentage: Double,
+    val data: List<Pair<Int, Double>>
+)
 
 @Composable
 fun MainScreen(
     modifier: Modifier,
-    coins: List<Coin> = net.rafgpereira.coinwatcher.data.coins
+    coins: List<Coin> = net.rafgpereira.coinwatcher.data.coins // TODO remove
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -66,7 +70,7 @@ fun MainScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SearchBar(modifier)
-                OrderBar(modifier.padding(top = 2.dp))
+                OrderBar(modifier)
                 CoinList(modifier, coins)
             }
         },
@@ -105,7 +109,7 @@ fun OrderBar(modifier: Modifier) =
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = dimensionResource(R.dimen.unit_dp)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -149,7 +153,7 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
             Column {
                 Row(
                     modifier = modifier
-                        .height(75.dp)
+                        .height(dimensionResource(R.dimen.main_coin_item_height))
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -161,36 +165,27 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
                         LineChart(
                             modifier = modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 4.dp),
+                                .padding(horizontal = dimensionResource(R.dimen.half_unit_dp)),
                             shouldDrawAxis = false,
                             shouldDrawLine = false,
-                            data = listOf(
-                                Pair(6, 111.45),
-                                Pair(7, 111.0),
-                                Pair(8, 113.45),
-                                Pair(9, 112.25),
-                                Pair(10, 116.45),
-                                Pair(11, 113.35),
-                                Pair(12, 118.65),
-                                Pair(13, 110.15),
-                                Pair(14, 113.05),
-                                Pair(15, 114.25),
-                                Pair(16, 116.35),
-                                Pair(17, 117.45),
-                                Pair(18, 112.65),
-                                Pair(19, 115.45),
-                                Pair(20, 111.85)
-                            )
+                            data = it.data
                         )
                         Column(
                             modifier = modifier
-                                .padding(12.dp)
+                                .padding(
+                                    vertical =
+                                        dimensionResource(R.dimen.main_coin_item_column_v_padding),
+                                    horizontal =
+                                        dimensionResource(R.dimen.main_coin_item_column_h_padding)
+                                )
                                 .constrainAs(name) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                 },
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                            verticalArrangement = Arrangement.spacedBy(
+                                dimensionResource(R.dimen.main_coin_item_name_spacing)
+                            ),
                         ) {
                             PillText(
                                 modifier = modifier,
@@ -207,23 +202,30 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
                         }
                         Column(
                             modifier = modifier
-                                .padding(12.dp)
+                                .padding(
+                                    vertical =
+                                        dimensionResource(R.dimen.main_coin_item_column_v_padding),
+                                    horizontal =
+                                        dimensionResource(R.dimen.main_coin_item_column_h_padding)
+                                )
                                 .constrainAs(price) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                 },
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(
+                                dimensionResource(R.dimen.main_coin_item_name_spacing)
+                            ),
                         ) {
                             val valueColor =
                                 if (it.percentage > 0) MaterialTheme.colorScheme.positive
-                                else MaterialTheme.colorScheme.negative
+                                else MaterialTheme.colorScheme.negative // TODO review color
 
                             PillText(
                                 modifier = modifier,
                                 text = "$${it.price}",
                                 backgroundColor = valueColor,
-                                textColor = Color.Black,
+                                textColor = Color.Black, // TODO review color
                                 textStyle = MaterialTheme.typography.labelMedium
                             )
                             Text(
@@ -237,15 +239,13 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
                 Box(
                     modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .height(1.dp)
-                        .background(MidGrey)
+                        .padding(horizontal = dimensionResource(R.dimen.unit_dp))
+                        .height(dimensionResource(R.dimen.main_coin_item_separator_height))
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                 )
             }
         }
     }
-
-data class Coin(val ticker: String, val name: String, val price: Double, val percentage: Double)
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
