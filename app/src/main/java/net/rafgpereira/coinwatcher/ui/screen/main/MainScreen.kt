@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,10 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstraintLayout
 import net.rafgpereira.coinwatcher.R
 import net.rafgpereira.coinwatcher.data.coins
+import net.rafgpereira.coinwatcher.ui.common.LineChart
 import net.rafgpereira.coinwatcher.ui.common.PillText
 import net.rafgpereira.coinwatcher.ui.common.ThemedAddFab
 import net.rafgpereira.coinwatcher.ui.common.ThemedTopAppBar
@@ -58,19 +58,9 @@ fun MainScreen(
         floatingActionButton = { ThemedAddFab(modifier) {} },
         floatingActionButtonPosition = FabPosition.End,
         content = { innerPadding ->
-            val startPadding = innerPadding.calculateStartPadding(LayoutDirection.Ltr)
-            val endPadding = innerPadding.calculateEndPadding(LayoutDirection.Ltr)
-            val topPadding = innerPadding.calculateTopPadding() - 40.dp
-            val bottomPadding = innerPadding.calculateBottomPadding()
-
             Column(
                 modifier = modifier
-                    .padding(
-                        top = topPadding,
-                        start = startPadding,
-                        end = endPadding,
-                        bottom = bottomPadding
-                    )
+                    .padding(innerPadding)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -154,53 +144,94 @@ fun OrderBar(modifier: Modifier) =
 
 @Composable
 fun CoinList(modifier: Modifier, data: List<Coin>) =
-    LazyColumn(modifier = modifier.fillMaxHeight(),) {
+    LazyColumn(modifier = modifier.fillMaxHeight()) {
         items(data) {
             Column {
                 Row(
                     modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 12.dp),
+                        .height(75.dp)
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                    ) {
-                        PillText(
-                            modifier = modifier,
-                            text = it.ticker,
-                            backgroundColor = MaterialTheme.colorScheme.primary,
-                            textColor = Color.White, //TODO change color
-                            textStyle = MaterialTheme.typography.labelMedium
-                        )
-                        Text(
-                            text = it.name,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color.Gray, //TODO change color
-                        )
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        val valueColor =
-                            if (it.percentage > 0) MaterialTheme.colorScheme.positive
-                            else MaterialTheme.colorScheme.negative
+                    ConstraintLayout(modifier = modifier.fillMaxWidth()) {
+                        val (name, price) = createRefs()
+                        createHorizontalChain(name, price, chainStyle = ChainStyle.SpreadInside)
 
-                        PillText(
-                            modifier = modifier,
-                            text = "$${it.price}",
-                            backgroundColor = valueColor,
-                            textColor = Color.Black,
-                            textStyle = MaterialTheme.typography.labelMedium
+                        LineChart(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 4.dp),
+                            shouldDrawAxis = false,
+                            shouldDrawLine = false,
+                            data = listOf(
+                                Pair(6, 111.45),
+                                Pair(7, 111.0),
+                                Pair(8, 113.45),
+                                Pair(9, 112.25),
+                                Pair(10, 116.45),
+                                Pair(11, 113.35),
+                                Pair(12, 118.65),
+                                Pair(13, 110.15),
+                                Pair(14, 113.05),
+                                Pair(15, 114.25),
+                                Pair(16, 116.35),
+                                Pair(17, 117.45),
+                                Pair(18, 112.65),
+                                Pair(19, 115.45),
+                                Pair(20, 111.85)
+                            )
                         )
-                        Text(
-                            text = "${if (it.percentage > 0) "+" else ""}${it.percentage}%",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = valueColor,
-                        )
+                        Column(
+                            modifier = modifier
+                                .padding(12.dp)
+                                .constrainAs(name) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            PillText(
+                                modifier = modifier,
+                                text = it.ticker,
+                                backgroundColor = MaterialTheme.colorScheme.primary,
+                                textColor = Color.White, //TODO change color
+                                textStyle = MaterialTheme.typography.labelMedium
+                            )
+                            Text(
+                                text = it.name,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.Gray, //TODO change color
+                            )
+                        }
+                        Column(
+                            modifier = modifier
+                                .padding(12.dp)
+                                .constrainAs(price) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            val valueColor =
+                                if (it.percentage > 0) MaterialTheme.colorScheme.positive
+                                else MaterialTheme.colorScheme.negative
+
+                            PillText(
+                                modifier = modifier,
+                                text = "$${it.price}",
+                                backgroundColor = valueColor,
+                                textColor = Color.Black,
+                                textStyle = MaterialTheme.typography.labelMedium
+                            )
+                            Text(
+                                text = "${if (it.percentage > 0) "+" else ""}${it.percentage}%",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = valueColor,
+                            )
+                        }
                     }
                 }
                 Box(
