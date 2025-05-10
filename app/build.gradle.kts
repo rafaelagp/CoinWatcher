@@ -1,20 +1,21 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     // Type Safe Compose Navigation
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "net.rafgpereira.coinwatcher"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "net.rafgpereira.coinwatcher"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -70,4 +71,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.constraintlayout.compose)
 }
