@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -28,12 +29,15 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import net.rafgpereira.coinwatcher.R
@@ -43,6 +47,7 @@ import net.rafgpereira.coinwatcher.ui.common.PillText
 import net.rafgpereira.coinwatcher.ui.common.ThemedAddFab
 import net.rafgpereira.coinwatcher.ui.common.ThemedTopAppBar
 import net.rafgpereira.coinwatcher.ui.theme.CoinWatcherTheme
+import net.rafgpereira.coinwatcher.ui.theme.MidGrey
 import net.rafgpereira.coinwatcher.ui.theme.negative
 import net.rafgpereira.coinwatcher.ui.theme.positive
 
@@ -149,12 +154,22 @@ fun OrderBar(modifier: Modifier) =
 @Composable
 fun CoinList(modifier: Modifier, data: List<Coin>) =
     LazyColumn(modifier = modifier.fillMaxHeight()) {
-        items(data) {
+        itemsIndexed(data) { index, it ->
+            val isFirstRow = (index + 3) % 3 == 0
+            val isThirdRow = (index + 1) % 3 == 0
+
             Column {
                 Row(
                     modifier = modifier
                         .height(dimensionResource(R.dimen.main_coin_item_height))
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .background(
+                            when {
+                                isFirstRow -> remember { MidGrey.copy(alpha = 0.25f) }
+                                isThirdRow -> remember { MidGrey.copy(alpha = 0.5f) }
+                                else -> remember { MidGrey.copy(alpha = 0.9f) }
+                            }
+                        ),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -182,7 +197,7 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                 },
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                            horizontalAlignment = Alignment.Start,
                             verticalArrangement = Arrangement.spacedBy(
                                 dimensionResource(R.dimen.main_coin_item_name_spacing)
                             ),
@@ -195,6 +210,7 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
                                 textStyle = MaterialTheme.typography.labelMedium
                             )
                             Text(
+                                modifier = modifier.align(Alignment.CenterHorizontally),
                                 text = it.name,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = Color.Gray, //TODO change color
@@ -212,7 +228,7 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                 },
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                            horizontalAlignment = Alignment.End,
                             verticalArrangement = Arrangement.spacedBy(
                                 dimensionResource(R.dimen.main_coin_item_name_spacing)
                             ),
@@ -229,6 +245,7 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
                                 textStyle = MaterialTheme.typography.labelMedium
                             )
                             Text(
+                                modifier = modifier.align(Alignment.CenterHorizontally),
                                 text = "${if (it.percentage > 0) "+" else ""}${it.percentage}%",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = valueColor,

@@ -24,4 +24,7 @@ val coins = listOf(
     Coin("BTC", "Bitcoin", 101000.00, 10.0, chartData),
     Coin("ETH", "Ethereum", 2150.00, 6.5, chartData),
     Coin("DOGE", "DogeCoin", 0.00004346, -11.2, chartData),
+    Coin("BNB", "Binance Network", 35.346, 2.3, chartData),
+    Coin("ETH", "Ethereum", 2150.00, 6.5, chartData),
+    Coin("DOGE", "DogeCoin", 0.00004346, -11.2, chartData),
 )

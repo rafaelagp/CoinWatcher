@@ -61,7 +61,7 @@ object LineChartDefaults {
         axisTextPaint: Paint = defaultAxisPaint(),
         lineColor: Color = MaterialTheme.colorScheme.primary,
         fillColors: List<Color> =
-            listOf(lineColor, remember { lineColor.copy(DEFAULT_FILL_GRADIENT_ALPHA) })
+            listOf(lineColor, remember { lineColor.copy(alpha = DEFAULT_FILL_GRADIENT_ALPHA) })
     ) = LineChartColors(axisTextPaint, lineColor, fillColors)
 
     @Composable
