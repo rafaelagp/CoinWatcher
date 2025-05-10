@@ -2,7 +2,9 @@ package net.rafgpereira.coinwatcher.ui.common
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -16,28 +18,20 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-// Derived from https://raw.githubusercontent.com/metehanbolatt/LineChartCompose/refs/heads/master/app/src/main/java/com/metehanbolat/linechartcompose/LineChart.kt
+// Based on https://raw.githubusercontent.com/metehanbolatt/LineChartCompose/refs/heads/master/app/src/main/java/com/metehanbolat/linechartcompose/LineChart.kt
 @Composable
 fun LineChart(
     data: List<Pair<Int, Double>> = emptyList(),
+    colors: LineChartDefaults.LineChartColors = LineChartDefaults.colors(),
+    style: LineChartDefaults.LineChartStyle = LineChartDefaults.style(),
     shouldDrawLine: Boolean = true,
     shouldDrawFill: Boolean = true,
     shouldDrawAxis: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    val graphColor = Color.Cyan
-    val transparentGraphColor = remember { graphColor.copy(alpha = 0.5f) }
     val upperValue = remember { (data.maxOfOrNull { it.second }?.plus(1))?.roundToInt() ?: 0 }
     val lowerValue = remember { (data.minOfOrNull { it.second }?.toInt() ?: 0) }
-    val density = LocalDensity.current
-
-    val textPaint = remember(density) {
-        Paint().apply {
-            color = android.graphics.Color.WHITE
-            textAlign = Paint.Align.CENTER
-            textSize = density.run { 12.sp.toPx() }
-        }
-    }
+    val axisTextPaint = remember(LocalDensity.current) { colors.axisTextPaint }
 
     Canvas(modifier = modifier) {
         val spacePerTime = size.width / data.size
@@ -51,10 +45,57 @@ fun LineChart(
 
         if (shouldDrawAxis)
             drawAxis(
-                drawContext, size.height, data, spacePerTime, textPaint, upperValue, lowerValue)
-        if (shouldDrawLine) drawLine(path, graphColor)
-        if (shouldDrawFill) drawFill(path, transparentGraphColor)
+                drawContext, size.height, data, spacePerTime, axisTextPaint, upperValue, lowerValue)
+        if (shouldDrawLine) drawLine(path, colors.lineColor, style.lineStroke)
+        if (shouldDrawFill) drawFill(path, style.fillBrush)
     }
+}
+
+object LineChartDefaults {
+    private val DEFAULT_LINE_STROKE_WIDTH = 2.dp
+    private const val DEFAULT_FILL_GRADIENT_ALPHA = 0.1f
+    private val DEFAULT_AXIS_TEXT_SIZE = 12.sp
+
+    @Composable
+    fun colors(
+        axisTextPaint: Paint = defaultAxisPaint(),
+        lineColor: Color = MaterialTheme.colorScheme.primary,
+        fillColors: List<Color> =
+            listOf(lineColor, remember { lineColor.copy(DEFAULT_FILL_GRADIENT_ALPHA) })
+    ) = LineChartColors(axisTextPaint, lineColor, fillColors)
+
+    @Composable
+    fun style(
+        lineStroke: Stroke = defaultLineStroke(),
+        fillBrush: Brush = Brush.verticalGradient(colors().fillColors)
+    ) = LineChartStyle(lineStroke, fillBrush)
+
+    @Immutable
+    class LineChartColors(
+        val axisTextPaint: Paint,
+        val lineColor: Color,
+        val fillColors: List<Color>
+    )
+
+    @Immutable
+    class LineChartStyle(
+        val lineStroke: Stroke,
+        val fillBrush: Brush
+    )
+
+    @Composable
+    private fun defaultAxisPaint() = Paint().apply {
+        color = MaterialTheme.colorScheme.primary.toArgb()
+        textAlign = Paint.Align.CENTER
+        textSize = LocalDensity.current.run { DEFAULT_AXIS_TEXT_SIZE.toPx() }
+    }
+
+    @Composable
+    private fun defaultLineStroke() =
+        Stroke(
+            width = LocalDensity.current.run { DEFAULT_LINE_STROKE_WIDTH.toPx() },
+            cap = StrokeCap.Round
+        )
 }
 
 private fun calculatePath(
@@ -115,32 +156,19 @@ private fun drawAxis(
     }
 }
 
-private fun DrawScope.drawLine(strokePath: Path, graphColor: Color) {
+private fun DrawScope.drawLine(path: Path, color: Color, stroke: Stroke) =
     drawPath(
-        path = strokePath,
-        color = graphColor,
-        style = Stroke(
-            width = 2.dp.toPx(),
-            cap = StrokeCap.Round
-        )
+        path = path,
+        color = color,
+        style = stroke
     )
-}
 
-private fun DrawScope.drawFill(strokePath: Path, color: Color) {
-    val fillPath = android.graphics.Path(strokePath.asAndroidPath()).asComposePath().apply {
+private fun DrawScope.drawFill(path: Path, brush: Brush) {
+    val fillPath = android.graphics.Path(path.asAndroidPath()).asComposePath().apply {
         lineTo(size.width, size.height)
         lineTo(0f, size.height)
         close()
     }
 
-    drawPath(
-        path = fillPath,
-        brush = Brush.verticalGradient(
-            colors = listOf(
-                color,
-                Color.Transparent
-            ),
-            endY = size.height
-        )
-    )
+    drawPath(path = fillPath, brush = brush)
 }

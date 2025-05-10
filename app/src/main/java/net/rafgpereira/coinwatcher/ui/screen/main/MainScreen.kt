@@ -167,7 +167,7 @@ fun CoinList(modifier: Modifier, data: List<Coin>) =
                                 .fillMaxSize()
                                 .padding(horizontal = dimensionResource(R.dimen.half_unit_dp)),
                             shouldDrawAxis = false,
-                            shouldDrawLine = false,
+                            shouldDrawLine = true,
                             data = it.data
                         )
                         Column(
